@@ -1,12 +1,27 @@
 # yummp
-a media player
+## 概述
 
-播放器使用
+一个音乐播放器
 
-MediaPlayer、ExoPlayer、VLC、ijkPlayer
+播放器适适配
 
-框架采用MeidaBrows
+MediaPlayer
 
-UI部分
+ExoPlayer
 
-JecPack
+VLC
+
+ijkPlayer
+
+框架MeidaBrowser
+
+UI部分根据网易云音乐
+
+JetPack
+
+## 功能
+
+
+
+# 参考
+
