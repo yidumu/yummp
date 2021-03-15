@@ -15,16 +15,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Yummp">
         <activity android:name=".MainActivity">
-
-        </activity>
-
-        <activity android:name=".MediaPlayerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MediaPlayerActivity"></activity>
 
         <service android:name="com.example.common.media.MediaPlaybackService">
             android:enabled="true"
