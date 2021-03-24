@@ -10,6 +10,9 @@ buildscript {
 
         // Dependency versions.
 
+        //Exoplayer
+        exoplayer_version = "2.13.2"
+
     }
 
     repositories {

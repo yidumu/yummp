@@ -1,14 +1,18 @@
 package com.example.yummp.fragments;
 
 import android.content.Intent;
+import android.media.session.MediaController;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,14 +88,28 @@ public class NowPlayingFragment extends Fragment {
         nowPlayingViewModel = new ViewModelProvider(requireActivity())
                 .get(NowPlayingFragmentViewModel.class);
 
-        binding.mediaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick() called with: v = [" + v + "]");
-                Intent intent = new Intent(requireActivity(), MediaPlayerActivity.class);
-                startActivity(intent);
+        binding.mediaButton.setOnClickListener(v -> {
+            Log.d(TAG, "onClick() called with: v = [" + v + "]");
+            MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(requireActivity());
+            int pbState = mediaController.getPlaybackState().getState();
+            MediaControllerCompat.TransportControls transportControls = mediaController.getTransportControls();
+            if (pbState == PlaybackStateCompat.STATE_PLAYING) {
+                transportControls.pause();
+            } else {
+                transportControls.play();
             }
         });
+
+        nowPlayingViewModel.getMediaButtonRes().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                binding.mediaButton.setImageResource(integer.intValue());
+            }
+        });
+    }
+
+    public void updateState() {
+        nowPlayingViewModel.getMediaButtonRes().postValue(0);
     }
 
     @Override

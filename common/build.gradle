@@ -33,4 +33,17 @@ dependencies {
     //Media
     implementation "androidx.media:media:1.2.0"
 
+    //ExoPlayer
+    if (findProject(':exoplayer-library-core') != null) {
+        api project(':exoplayer-library-core')
+        api project(':exoplayer-library-ui')
+        api project(':exoplayer-extension-mediasession')
+        api project(':exoplayer-extension-cast')
+    } else {
+        api "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+        api "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
+        api "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+        api "com.google.android.exoplayer:extension-cast:$exoplayer_version"
+    }
+
 }
