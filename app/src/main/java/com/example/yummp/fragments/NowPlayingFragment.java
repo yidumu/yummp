@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import com.example.yummp.MediaPlayerActivity;
 import com.example.yummp.R;
 import com.example.yummp.databinding.FragmentNowPlayingBinding;
+import com.example.yummp.viewmodels.MainActivityViewModel;
 import com.example.yummp.viewmodels.NowPlayingFragmentViewModel;
 
 /**
@@ -42,6 +43,7 @@ public class NowPlayingFragment extends Fragment {
 
     private FragmentNowPlayingBinding binding;
     private NowPlayingFragmentViewModel nowPlayingViewModel;
+    private MainActivityViewModel mMainActivityViewModel;
 
     public NowPlayingFragment() {
         // Required empty public constructor
@@ -87,17 +89,11 @@ public class NowPlayingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         nowPlayingViewModel = new ViewModelProvider(requireActivity())
                 .get(NowPlayingFragmentViewModel.class);
+        mMainActivityViewModel = new ViewModelProvider(requireActivity()).get(MainActivityViewModel.class);
 
         binding.mediaButton.setOnClickListener(v -> {
             Log.d(TAG, "onClick() called with: v = [" + v + "]");
-            MediaControllerCompat mediaController = MediaControllerCompat.getMediaController(requireActivity());
-            int pbState = mediaController.getPlaybackState().getState();
-            MediaControllerCompat.TransportControls transportControls = mediaController.getTransportControls();
-            if (pbState == PlaybackStateCompat.STATE_PLAYING) {
-                transportControls.pause();
-            } else {
-                transportControls.play();
-            }
+            mMainActivityViewModel.playMediaId();
         });
 
         nowPlayingViewModel.getMediaButtonRes().observe(getViewLifecycleOwner(), new Observer<Integer>() {

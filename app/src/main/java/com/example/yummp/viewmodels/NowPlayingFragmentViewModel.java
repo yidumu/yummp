@@ -26,4 +26,8 @@ public class NowPlayingFragmentViewModel extends AndroidViewModel {
         }
         return mediaButtonRes;
     }
+
+    public void updateState() {
+        getMediaButtonRes().postValue(0);
+    }
 }
