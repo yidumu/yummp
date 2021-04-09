@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.v4.media.MediaBrowserCompat.MediaItem;
+import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
@@ -12,11 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
+import com.example.common.library.MusicSource;
 import com.google.android.exoplayer2.ControlDispatcher;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +58,7 @@ public class MediaPlaybackService extends MediaBrowserServiceCompat {
         //ExoPlayer will manage the MediaSession for us.
         MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
         mediaSessionConnector.setPlaybackPreparer(new UampPlaybackPreparer());
-        mediaSessionConnector.setQueueNavigator(new UampQueueNavigator());
+        mediaSessionConnector.setQueueNavigator(new UampQueueNavigator(mediaSession));
         mediaSessionConnector.setPlayer(exoPlayer);
     }
 
@@ -79,16 +82,16 @@ public class MediaPlaybackService extends MediaBrowserServiceCompat {
         exoPlayer.addListener(mEventListener);
     }
 
-    //https://storage.googleapis.com/uamp/catalog.json
-    //https://freemusicarchive.org/
-    private void preparePlaylist() {
-        com.google.android.exoplayer2.MediaItem mediaItem = com.google.android.exoplayer2.MediaItem.fromUri("https://storage.googleapis.com/uamp/The_Kyoto_Connection_-_Wake_Up/02_-_Geisha.mp3");
-        // Set the media item to be played.
-        exoPlayer.setMediaItem(mediaItem);
-        // Prepare the player.
+
+    private void preparePlaylist(boolean playWhenReady) {
+        exoPlayer.setPlayWhenReady(playWhenReady);
+        exoPlayer.stop(true);
+
+        exoPlayer.addMediaItem(MusicSource.mediaItem1);
+        exoPlayer.addMediaItem(MusicSource.mediaItem2);
+
         exoPlayer.prepare();
-        // Start the playback.
-        exoPlayer.play();
+
     }
 
     /**
@@ -140,12 +143,13 @@ public class MediaPlaybackService extends MediaBrowserServiceCompat {
         @Override
         public void onPrepare(boolean playWhenReady) {
             Log.d(TAG, "onPrepare() called with: playWhenReady = [" + playWhenReady + "]");
-            preparePlaylist();
+            onPrepareFromMediaId(null, playWhenReady, null);
         }
 
         @Override
         public void onPrepareFromMediaId(String mediaId, boolean playWhenReady, @Nullable Bundle extras) {
             Log.d(TAG, "onPrepareFromMediaId: ");
+            preparePlaylist(playWhenReady);
         }
 
         @Override
@@ -165,45 +169,15 @@ public class MediaPlaybackService extends MediaBrowserServiceCompat {
         }
     }
 
-    private class UampQueueNavigator implements MediaSessionConnector.QueueNavigator {
-        @Override
-        public long getSupportedQueueNavigatorActions(Player player) {
-            return 0;
+    private class UampQueueNavigator extends TimelineQueueNavigator {
+
+        public UampQueueNavigator(MediaSessionCompat mediaSession) {
+            super(mediaSession);
         }
 
         @Override
-        public void onTimelineChanged(Player player) {
-            Log.d(TAG, "onTimelineChanged: ");
-        }
-
-        @Override
-        public void onCurrentWindowIndexChanged(Player player) {
-            Log.d(TAG, "onCurrentWindowIndexChanged: ");
-        }
-
-        @Override
-        public long getActiveQueueItemId(@Nullable Player player) {
-            return 0;
-        }
-
-        @Override
-        public void onSkipToPrevious(Player player, ControlDispatcher controlDispatcher) {
-            Log.d(TAG, "onSkipToPrevious: ");
-        }
-
-        @Override
-        public void onSkipToQueueItem(Player player, ControlDispatcher controlDispatcher, long id) {
-            Log.d(TAG, "onSkipToQueueItem: ");
-        }
-
-        @Override
-        public void onSkipToNext(Player player, ControlDispatcher controlDispatcher) {
-            Log.d(TAG, "onSkipToNext: ");
-        }
-
-        @Override
-        public boolean onCommand(Player player, ControlDispatcher controlDispatcher, String command, @Nullable Bundle extras, @Nullable ResultReceiver cb) {
-            return false;
+        public MediaDescriptionCompat getMediaDescription(Player player, int windowIndex) {
+            return null;
         }
     }
 
