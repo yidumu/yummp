@@ -29,7 +29,6 @@ android {
 }
 
 dependencies {
-
     //Media
     implementation "androidx.media:media:1.2.0"
 
@@ -46,4 +45,11 @@ dependencies {
         api "com.google.android.exoplayer:extension-cast:$exoplayer_version"
     }
 
+    // Glide dependencies
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    //网络
+    api "com.google.code.gson:gson:$gson_version"
+    api "com.squareup.retrofit2:retrofit:$retrofit_version"
 }

@@ -86,10 +86,7 @@ public class MediaPlaybackService extends MediaBrowserServiceCompat {
     private void preparePlaylist(boolean playWhenReady) {
         exoPlayer.setPlayWhenReady(playWhenReady);
         exoPlayer.stop(true);
-
-        exoPlayer.addMediaItem(MusicSource.mediaItem1);
-        exoPlayer.addMediaItem(MusicSource.mediaItem2);
-
+        //exoPlayer.addMediaItem();
         exoPlayer.prepare();
 
     }
